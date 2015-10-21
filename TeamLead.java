@@ -1,8 +1,9 @@
-public class TeamLead{
-	public string name;
+
+public class TeamLead extends Employee{
+	public String name;
 	//Will have a collection of developers (in our scenario only 3)
 	
-	public TeamLead(string name){
+	public TeamLead(String name){
 		this.name = name;		
 	}
 	
