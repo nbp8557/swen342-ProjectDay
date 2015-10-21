@@ -20,4 +20,14 @@ public class Employee extends Thread {
 		//wait or do no work for lunch duration
 		return lunchDuration;
 	}
+	/*
+	 *  anypoint during the day a team member may ask a question 
+	 *  of his or her team lead. 
+	 *  There is an 50% chance that the team lead can answer the question,
+	 *   at which time the lead and the team member return to work.
+	 */
+	private void askQuestion(){
+		//Ask the team lead the question
+	}
+	
 }
