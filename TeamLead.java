@@ -2,9 +2,12 @@
 public class TeamLead extends Employee{
 	public String name;
 	//Will have a collection of developers 
+	public Employee[] teamMembers;
+
 	
-	public TeamLead(String name){
-		this.name = name;		
+	public TeamLead(String name, Employee[] members){
+		this.name = name;
+		this.teamMembers = members;
 	}
 	/*
 	 * After the meeting, the team leads wait for all the members 
@@ -63,5 +66,4 @@ public class TeamLead extends Employee{
 		
 		return false;
 	}
-	
 }
