@@ -38,10 +38,31 @@ public class Manager extends Thread{
 		//Add question to the queue
 		
 		// If he does not have a meeting or lunch then answer a question
+			//IfBusy check
 			//sleep 10 minutes then return 
 		//otherwise wait until after meeting	
 		
 		
 	}
+	
+	
+	/*
+	 * The manager has two daily executive meetings, each lasting one hour,
+	 *  one from 10:00 to 11:00 and one from 2:00 to 3:00. In addition, 
+	 *  the manager eats lunch for one hour starting as close to from 12:00 
+	 *  as possible to 1:00. If in the middle of answering a question when 
+	 *  a meeting or lunch begins, the manager finishes answering the question 
+	 *  and then goes to the meeting or lunch. Any other teams with questions 
+	 *  simply wait for the manager to return.
+	 */
+	private boolean IfBusy(){
+		//if the manager's state busy is true
+			//then return true;
+		//otherwise 
+			//set the manager's busy state to true
+			//and return false
+		return false;
+	}
+	
 	
 }
