@@ -6,6 +6,11 @@ public class Employee extends Thread {
 	int arrivalTime = -1;
 	int lunchLength = -1;
 	private Random gen = new Random();
+	private TeamLead teamLead = null;
+	
+	public Employee(TeamLead lead){
+		teamLead = lead;
+	}
 	
 	public void run(){
 		//do stuff
@@ -28,6 +33,12 @@ public class Employee extends Thread {
 	 */
 	private void askQuestion(){
 		//Ask the team lead the question
+		boolean answered = teamLead.AnswerQuestion();
+		if(answered){
+			System.out,println("Answered!");
+		} else {
+			//ask manager, probably handled by the teamlead
+		}
 	}
 	
 }

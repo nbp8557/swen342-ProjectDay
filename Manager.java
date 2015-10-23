@@ -2,6 +2,7 @@
 public class Manager extends Thread{
 	//Will have a collection of team leads 
 	//Will have a queue for questions
+	//some sort of state "busy" variable that we will lock
 	
 	/*
 	 * When he arrives at 8:00 each day, the manager engages in daily
