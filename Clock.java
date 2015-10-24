@@ -8,6 +8,7 @@ public class Clock extends Thread {
 	public static final int BEGIN_LEAVING = 510;
 	public static final int END_OF_DAY = 540;
 
+	public static final int WORKDAY = 480; //8 hours
 	public static final int HOUR = 60;
 	public static final int HALF_HOUR = 30;
 	public static final int QUARTER_HOUR = 15;
@@ -15,8 +16,12 @@ public class Clock extends Thread {
 
 	int timeOfDay = START_OF_DAY;
 
+	public synchronized int getCurrentTime(){
+		return timeOfDay;
+	}
+
 	public int toRealtime(int Simulatedmin){
-		return min * 10;
+		return Simulatedmin * 10;
 	}
 
 	public int toSimulatedMin(int ms){

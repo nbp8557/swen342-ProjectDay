@@ -1,8 +1,10 @@
+import java.util.ArrayList;
 import java.util.concurrent.PriorityBlockingQueue;
 
 
 public class Manager extends Thread{
 	//Will have a collection of team leads 
+	ArrayList<TeamLead> TeamLeads = new ArrayList<TeamLead>();
 	//Will have a queue for questions
 	PriorityBlockingQueue<String> Questions = new PriorityBlockingQueue<String> ();
 	//some sort of state "busy" variable that we will lock
@@ -12,7 +14,35 @@ public class Manager extends Thread{
 	public Manager(){
 		this.busy = false;
 	}
+	
+	@ Override
+	public void run(){
+		//The manager has arrived at work 
+		this.ArriveAtWork();
 		
+		while(Clock.getCurrentTime() <= Clock.END_OF_DAY){			
+			
+			if(Clock.getCurrentTime() >= Clock.EXEC1 &&  Clock.getCurrentTime() < Clock.EXEC1 + Clock.hour){
+				System.out.println("Manager is going to first Executive meeting");
+			}
+	
+			if(Clock.getCurrentTime() >= Clock.LUNCH &&  Clock.getCurrentTime() < Clock.LUNCH + Clock.hour){
+				System.out.println("Manager is going to first Executive meeting");
+			}
+			
+			if(Clock.getCurrentTime() >= Clock.EXEC2 &&  Clock.getCurrentTime() < Clock.EXEC2 + Clock.hour){
+				System.out.println("Manager is going to the second Executive meeting");
+			}
+			
+			if(Clock.getCurrentTime() >= Clock.STANDUP && Clock.getCurrentTime() < Clock.STANDUP + Clock.QUARTER_HOUR){
+				System.out.println("Manager is going to the End of Day Standup");
+				EndOfDayMeeting();
+			}
+			
+		}
+		System.out.println("Manager has left work.");		
+	}
+	
 	/*
 	 * When he arrives at 8:00 each day, the manager engages in daily
 	 *  planning activites and then waits (doing administrivia) until
@@ -27,7 +57,8 @@ public class Manager extends Thread{
 		
 		
 			//When they have all arrived the team leads and manager will
-				//wait 15 minutes
+			//	wait 15 minutes	
+			this.sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
 	}
 	
 	/*
@@ -41,6 +72,7 @@ public class Manager extends Thread{
 		//Goes to the conference room and waits for everyone to be there
 			//Call team lead's endOfDayMeeting
 				//when everyone is there sleep 15 minutes
+			this.sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
 		
 	}
 	
@@ -52,15 +84,11 @@ public class Manager extends Thread{
 		while(IsBusy()==true){
 			
 		}
-		
-		
-		
-		// If he does not have a meeting or lunch then answer a question
-			//IsBusy check
-			//sleep 10 minutes then return 
-		//otherwise wait until after meeting	
-		
-		
+		//If he does not have a meeting or lunch then answer a question		
+		//sleep 10 minutes to simulate time to answer the question 
+		this.sleep(Clock.toRealtime(Clock.TEN_MINUTES));
+		//Answer the question
+		Questions.remove();	
 	}
 	
 	
