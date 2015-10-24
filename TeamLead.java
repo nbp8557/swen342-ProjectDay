@@ -3,9 +3,11 @@ public class TeamLead extends Employee{
 	public String name;
 	//Will have a collection of developers 
 	public Employee[] teamMembers;
-
-	
+	private static TeamLead temp;
+	private Clock clock;
 	public TeamLead(String name, Employee[] members){
+		
+		super(temp);
 		this.name = name;
 		this.teamMembers = members;
 	}
@@ -23,6 +25,20 @@ public class TeamLead extends Employee{
 		
 			//otherwise have a 15 minute meeting
 				//sleep 15
+		
+		ConferenceRoom conf = new ConferenceRoom();
+		
+		while(true){
+			if (IsTeamIn()){
+				if (conf.isAvailable()){
+					try {
+						sleep(clock.toSimulatedMin(1500));
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 		
 	}
 	
@@ -65,5 +81,16 @@ public class TeamLead extends Employee{
 		
 		
 		return false;
+	}
+	
+	
+	private boolean IsTeamIn(){
+		boolean teamAllHere = true;
+		for(Employee dev : teamMembers){
+			if(! dev.isAlive()){
+				return false;
+			}
+		}
+		return true;
 	}
 }
