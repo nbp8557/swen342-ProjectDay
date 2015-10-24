@@ -35,7 +35,7 @@ public class Employee extends Thread {
 		//Ask the team lead the question
 		boolean answered = teamLead.AnswerQuestion();
 		if(answered){
-			System.out,println("Answered!");
+			System.out.println("Answered!");
 		} else {
 			//ask manager, probably handled by the teamlead
 		}

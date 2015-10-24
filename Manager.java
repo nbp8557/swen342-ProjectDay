@@ -1,9 +1,18 @@
+import java.util.concurrent.PriorityBlockingQueue;
+
 
 public class Manager extends Thread{
 	//Will have a collection of team leads 
 	//Will have a queue for questions
+	PriorityBlockingQueue<String> Questions = new PriorityBlockingQueue<String> ();
 	//some sort of state "busy" variable that we will lock
+	private Object busyLock = new Object() ;
+	private boolean busy;
 	
+	public Manager(){
+		this.busy = false;
+	}
+		
 	/*
 	 * When he arrives at 8:00 each day, the manager engages in daily
 	 *  planning activites and then waits (doing administrivia) until
@@ -13,9 +22,9 @@ public class Manager extends Thread{
 	 *
 	 */
 	private void ArriveAtWork(){
-		//The manager arrives at 8
-		
+		//The manager arrives at 8		
 		//He then waits until all of the team leads arrive at his office
+		
 		
 			//When they have all arrived the team leads and manager will
 				//wait 15 minutes
@@ -37,9 +46,17 @@ public class Manager extends Thread{
 	
 	private void AnswerQuestion(){
 		//Add question to the queue
+		Questions.add("Question");
+		
+		//Manager is busy wait until he is no longer busy
+		while(IsBusy()==true){
+			
+		}
+		
+		
 		
 		// If he does not have a meeting or lunch then answer a question
-			//IfBusy check
+			//IsBusy check
 			//sleep 10 minutes then return 
 		//otherwise wait until after meeting	
 		
@@ -56,13 +73,20 @@ public class Manager extends Thread{
 	 *  and then goes to the meeting or lunch. Any other teams with questions 
 	 *  simply wait for the manager to return.
 	 */
-	private boolean IfBusy(){
+	private boolean IsBusy(){
 		//if the manager's state busy is true
-			//then return true;
-		//otherwise 
+		if(busy == true){
+			//then return true
+			return true;
+		}else{
 			//set the manager's busy state to true
 			//and return false
-		return false;
+			synchronized(busyLock){
+				this.busy =true;
+				return false;
+			}
+		}
+			
 	}
 	
 	

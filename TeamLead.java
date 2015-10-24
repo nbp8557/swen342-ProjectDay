@@ -6,6 +6,7 @@ public class TeamLead extends Employee{
 
 	
 	public TeamLead(String name, Employee[] members){
+		super(null);
 		this.name = name;
 		this.teamMembers = members;
 	}
