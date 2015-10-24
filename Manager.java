@@ -6,13 +6,9 @@ public class Manager extends Thread{
 	//Will have a collection of team leads 
 	ArrayList<TeamLead> TeamLeads = new ArrayList<TeamLead>();
 	//Will have a queue for questions
-	PriorityBlockingQueue<String> Questions = new PriorityBlockingQueue<String> ();
-	//some sort of state "busy" variable that we will lock
-	private Object busyLock = new Object() ;
-	private boolean busy;
+	PriorityBlockingQueue<TeamLead> Questions = new PriorityBlockingQueue<TeamLead> ();
 	
 	public Manager(){
-		this.busy = false;
 	}
 	
 	@ Override
@@ -24,19 +20,22 @@ public class Manager extends Thread{
 			
 			if(Clock.getCurrentTime() >= Clock.EXEC1 &&  Clock.getCurrentTime() < Clock.EXEC1 + Clock.hour){
 				System.out.println("Manager is going to first Executive meeting");
-			}
-	
-			if(Clock.getCurrentTime() >= Clock.LUNCH &&  Clock.getCurrentTime() < Clock.LUNCH + Clock.hour){
-				System.out.println("Manager is going to first Executive meeting");
-			}
-			
-			if(Clock.getCurrentTime() >= Clock.EXEC2 &&  Clock.getCurrentTime() < Clock.EXEC2 + Clock.hour){
+				this.sleep(Clock.toRealtime(Clock.HOUR));
+			}	
+			else if(Clock.getCurrentTime() >= Clock.LUNCH &&  Clock.getCurrentTime() < Clock.LUNCH + Clock.hour){
+				System.out.println("Manager is going to Lunch");
+				this.sleep(Clock.toRealtime(Clock.HOUR));
+			}			
+			else if(Clock.getCurrentTime() >= Clock.EXEC2 &&  Clock.getCurrentTime() < Clock.EXEC2 + Clock.hour){
 				System.out.println("Manager is going to the second Executive meeting");
-			}
-			
-			if(Clock.getCurrentTime() >= Clock.STANDUP && Clock.getCurrentTime() < Clock.STANDUP + Clock.QUARTER_HOUR){
+				this.sleep(Clock.toRealtime(Clock.HOUR));
+			}			
+			else if(Clock.getCurrentTime() >= Clock.STANDUP && Clock.getCurrentTime() < Clock.STANDUP + Clock.QUARTER_HOUR){
 				System.out.println("Manager is going to the End of Day Standup");
 				EndOfDayMeeting();
+			}else if(!Questions.isEmpty()){
+				System.out.println("Manager is answering a question");
+				AnswerQuestion();
 			}
 			
 		}
@@ -54,8 +53,7 @@ public class Manager extends Thread{
 	private void ArriveAtWork(){
 		//The manager arrives at 8		
 		//He then waits until all of the team leads arrive at his office
-		
-		
+				
 			//When they have all arrived the team leads and manager will
 			//	wait 15 minutes	
 			this.sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
@@ -72,50 +70,19 @@ public class Manager extends Thread{
 		//Goes to the conference room and waits for everyone to be there
 			//Call team lead's endOfDayMeeting
 				//when everyone is there sleep 15 minutes
-			this.sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
-		
+			this.sleep(Clock.toRealtime(Clock.QUARTER_HOUR));		
 	}
 	
-	private void AnswerQuestion(){
-		//Add question to the queue
-		Questions.add("Question");
-		
-		//Manager is busy wait until he is no longer busy
-		while(IsBusy()==true){
-			
-		}
-		//If he does not have a meeting or lunch then answer a question		
-		//sleep 10 minutes to simulate time to answer the question 
+	//Team lead will answer a question
+	private boolean AnswerQuestion(){
 		this.sleep(Clock.toRealtime(Clock.TEN_MINUTES));
-		//Answer the question
-		Questions.remove();	
+		Questions.remove().notify();
 	}
 	
-	
-	/*
-	 * The manager has two daily executive meetings, each lasting one hour,
-	 *  one from 10:00 to 11:00 and one from 2:00 to 3:00. In addition, 
-	 *  the manager eats lunch for one hour starting as close to from 12:00 
-	 *  as possible to 1:00. If in the middle of answering a question when 
-	 *  a meeting or lunch begins, the manager finishes answering the question 
-	 *  and then goes to the meeting or lunch. Any other teams with questions 
-	 *  simply wait for the manager to return.
-	 */
-	private boolean IsBusy(){
-		//if the manager's state busy is true
-		if(busy == true){
-			//then return true
-			return true;
-		}else{
-			//set the manager's busy state to true
-			//and return false
-			synchronized(busyLock){
-				this.busy =true;
-				return false;
-			}
-		}
-			
+	//Team lead asks a question which is added to the priority queue
+	private void AskQuestion(TeamLead teamLead){
+		//Add question to the queue
+		Questions.add(teamLead);	
 	}
-	
 	
 }

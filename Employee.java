@@ -26,7 +26,7 @@ public class Employee extends Thread {
 			} else if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchLength - arrivalTime >= Clock.WORKDAY){
 				System.out.println(getNameStr() + " went home.");
 				break;
-			} else if(currentTime >= Clock.LUNCH && lunchLength = -1){
+			} else if(currentTime >= Clock.LUNCH && lunchLength == -1){
 				System.out.println(getNameStr() + " went to lunch.");
 				lunchLength = lunch();
 				wait(Clock.toRealtime(lunchLength));
