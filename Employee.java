@@ -5,15 +5,33 @@ import java.util.Random;
 public class Employee extends Thread {
 	int arrivalTime = -1;
 	int lunchLength = -1;
+	int teamNumber;
+	int memberNumber;
+
 	private Random gen = new Random();
 	private TeamLead teamLead = null;
 	
-	public Employee(TeamLead lead){
+	public Employee(TeamLead lead, int teamNum, int memNum){
 		teamLead = lead;
+		teamNumber = teamNum;
+		memberNumber = memNum;
 	}
 	
 	public void run(){
-		//do stuff
+		while(true){
+			int currentTime = Clock.getCurrentTime();
+			if (currentTime >= Clock.END_OF_DAY) {
+				System.out.println(getNameStr() + " went home.");
+				break;
+			} else if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchLength - arrivalTime >= Clock.WORKDAY){
+				System.out.println(getNameStr() + " went home.");
+				break;
+			} else if(currentTime >= Clock.LUNCH && lunchLength = -1){
+				System.out.println(getNameStr() + " went to lunch.");
+				lunchLength = lunch();
+				wait(Clock.toRealtime(lunchLength));
+			}
+		}
 	}
 	
 	/**
@@ -21,7 +39,7 @@ public class Employee extends Thread {
 	 * returns int minutes of how long they were out (30 - 60 min)
 	 */
 	private int lunch(){
-		int lunchDuration = gen.nextInt(30) + 30;
+		int lunchDuration = arrivalTime + Clock.HALF_HOUR;
 		//wait or do no work for lunch duration
 		return lunchDuration;
 	}
@@ -35,10 +53,14 @@ public class Employee extends Thread {
 		//Ask the team lead the question
 		boolean answered = teamLead.AnswerQuestion();
 		if(answered){
-			System.out,println("Answered!");
+			System.out.println("Answered!");
 		} else {
 			//ask manager, probably handled by the teamlead
 		}
+	}
+
+	private String getNameStr(){
+		return "Developer " + Integer.parseInt(teamNumber) + " - " + Integer.parseInt(memberNumber);
 	}
 	
 }
