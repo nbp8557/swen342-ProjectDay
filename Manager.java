@@ -80,7 +80,7 @@ public class Manager extends Thread{
 	}
 	
 	//Team lead asks a question which is added to the priority queue
-	private void AskQuestion(TeamLead teamLead){
+	public void AskQuestion(TeamLead teamLead){
 		//Add question to the queue
 		Questions.add(teamLead);	
 	}
