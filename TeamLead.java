@@ -95,8 +95,9 @@ public class TeamLead extends Employee{
 		//50% chance that we return true
 		if (!isAnswered){
 			try {
-				wait();
-				q.wait();
+				synchronized(q){
+					q.wait();
+				}
 				manager.AskQuestion(this);
 				q.notify();
 				
@@ -105,7 +106,6 @@ public class TeamLead extends Employee{
 			}
 		}
 		else{
-			questions.remove().notify();
 			return true;
 		}
 		//If false

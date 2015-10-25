@@ -227,7 +227,9 @@ public class Manager extends Thread{
 
 		//tell the team Lead to wait If the manager is not already busy
 		try {
-			teamLead.wait();
+			synchronized(teamLead){
+				teamLead.wait();
+			}			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
