@@ -6,26 +6,19 @@ public class TeamLead extends Employee{
 	private int lunchTime;
 	private int arrivalTime;
 	private String name;
-	//Will have a collection of developers 
 	private ArrayList<Employee> teamMembers;
 	private static TeamLead temp;
 	private Clock clock;
 	private Manager manager;
 	private PriorityBlockingQueue<Employee> questions = new PriorityBlockingQueue<Employee>();
-		
-	public TeamLead(String name, int teamNum, Clock clck, Manager man){
+	
+	
+	public TeamLead(String name, int teamNum, ArrayList<Employee> members, Clock clck, Manager man){
 		super(temp, teamNum, 1, clck);
 		this.manager = man;
-		this.teamMembers = new ArrayList<Employee>();
-
 		this.name = name;
+		this.teamMembers = members;
 	}
-	
-	//used to add Team Leads to the managers collection
-	public boolean AddEmployee(Employee dev){
-		return teamMembers.add(dev);		
-	}
-	
 	/*
 	 * After the meeting, the team leads wait for all the members 
 	 * of their team to arrive. When all members of a team are present,
@@ -50,9 +43,12 @@ public class TeamLead extends Employee{
 				synchronized(conf){
 					try
 					{
-						System.out.println(clock.getCurrentTime() + " " + name + "'s team meets in the conference room.");
+						System.out.println(clock.getTimeStr(clock.getCurrentTime()) + " " + name + "'s team meets in the conference room.");
 						sleep(Clock.toRealtime(15));
-						System.out.println(name+"'s team leaves the conference room.");
+						for(Employee dev : teamMembers){
+							dev.sleep(Clock.toRealtime(15));
+						}
+						System.out.println(clock.getTimeStr(clock.getCurrentTime())+" "+ name+"'s team leaves the conference room.");
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -120,6 +116,10 @@ public class TeamLead extends Employee{
 		
 	}
 	
+	public ArrayList<Employee> getDevs(){
+		return this.teamMembers;
+	}
+	
 	
 	private boolean IsTeamIn(){
 		for(Employee dev : teamMembers){
@@ -135,10 +135,8 @@ public class TeamLead extends Employee{
 	}
 	
 	public void run(){
-		while(clock.getCurrentTime() == clock.END_OF_DAY){
+		while(clock.getCurrentTime() < clock.END_OF_DAY){
 			int currentTime = clock.getCurrentTime();
-			
-			
 			
 			if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchTime - arrivalTime >= Clock.WORKDAY){
 				break;
@@ -154,11 +152,10 @@ public class TeamLead extends Employee{
 				TeamMorningStandup();
 			}
 			
-				
-			
 			else{
 				AnswerQuestion();
 			}
 		}
+		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " " + name + " went home.");
 	}
 }
