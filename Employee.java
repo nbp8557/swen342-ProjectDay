@@ -3,18 +3,20 @@ import java.util.Random;
  * Employee class
  */
 public class Employee extends Thread {
-	int arrivalTime = -1;
-	int lunchLength = -1;
+	private int arrivalTime = -1;
+	private int lunchLength = -1;
 	int teamNumber;
 	int memberNumber;
 
 	private Random gen = new Random();
 	private TeamLead teamLead = null;
+	private Clock clock;
 	
-	public Employee(TeamLead lead, int teamNum, int memNum){
+	public Employee(TeamLead lead, int teamNum, int memNum, Clock clck){
 		teamLead = lead;
 		teamNumber = teamNum;
 		memberNumber = memNum;
+		clock = clck;
 	}
 	
 	public void run(){
@@ -22,14 +24,18 @@ public class Employee extends Thread {
 	}
 
 	public void work(){
-		while(Clock.getCurrentTime() < Clock.END_OF_DAY){
-			int currentTime = Clock.getCurrentTime();
+		arrivalTime = clock.getCurrentTime();
+		System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " arrives at work.");
+		while(clock.getCurrentTime() < Clock.END_OF_DAY){
+			int currentTime = clock.getCurrentTime();
 			if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchLength - arrivalTime >= Clock.WORKDAY){
 				break;
 			} else if(currentTime >= Clock.LUNCH && lunchLength == -1){
-				System.out.println(getNameStr() + " went to lunch.");
+				System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " went to lunch.");
 				lunchLength = lunch();
-				sleep(Clock.toRealtime(lunchLength));
+				try{
+					sleep(Clock.toRealtime(lunchLength));
+				} catch (InteruptedException e){}
 			} else {
 				boolean hasQuestion = gen.nextInt(1000) == 1;
 				if (hasQuestion) {
@@ -46,7 +52,7 @@ public class Employee extends Thread {
 	 * returns int minutes of how long they were out (30 - 60 min)
 	 */
 	private int lunch(){
-		int lunchDuration = arrivalTime + Clock.HALF_HOUR;
+		int lunchDuration = gen.nextInt(arrivalTime) + Clock.HALF_HOUR;
 		//wait or do no work for lunch duration
 		return lunchDuration;
 	}
