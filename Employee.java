@@ -25,7 +25,7 @@ public class Employee extends Thread {
 
 	public void work(){
 		arrivalTime = clock.getCurrentTime();
-		System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " arrives at work.");
+		System.out.println(Clock.getTimeStr(arrivalTime) + " " + getNameStr() + " arrives at work.");
 		while(clock.getCurrentTime() < Clock.END_OF_DAY){
 			int currentTime = clock.getCurrentTime();
 			if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchLength - arrivalTime >= Clock.WORKDAY){
@@ -35,7 +35,7 @@ public class Employee extends Thread {
 				lunchLength = lunch();
 				try{
 					sleep(Clock.toRealtime(lunchLength));
-				} catch (InteruptedException e){}
+				} catch (InterruptedException e){}
 				System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " returned from lunch.");
 			} else {
 				boolean hasQuestion = gen.nextInt(1000) == 1;
