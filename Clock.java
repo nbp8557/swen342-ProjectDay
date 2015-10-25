@@ -1,4 +1,6 @@
-public class Clock extends Thread {
+import java.util.Timer;
+import java.util.TimerTask;
+public class Clock {
 	//event times are in minutes elasped from the start of the workday(8)
 	public static final int START_OF_DAY = 0;
 	public static final int EXEC1 = 120;
@@ -15,16 +17,27 @@ public class Clock extends Thread {
 	public static final int TEN_MINUTES = 10;
 
 	int timeOfDay = START_OF_DAY;
+	private Timer timeKeep;
+
+	public Clock(){
+		timeKeep = new Timer(true);
+		TimerTask task = new TimerTask(){
+			public void run(){
+				timeOfDay++;
+			}
+		};
+		timeKeep.scheduleAtFixedRate(task, 0, 10);
+	}
 
 	public synchronized int getCurrentTime(){
 		return timeOfDay;
 	}
 
-	public int toRealtime(int Simulatedmin){
+	public static int toRealtime(int Simulatedmin){
 		return Simulatedmin * 10;
 	}
 
-	public int toSimulatedMin(int ms){
+	public static int toSimulatedMin(int ms){
 		return ms / 10;
 	}
 
