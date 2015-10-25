@@ -24,7 +24,7 @@ public class TeamLead extends Employee{
 	 *  to become available, enters the room with all team members, 
 	 *  and holds a holds a team-based standup meeting for 15 minutes.
 	 */
-	public void MorningStandup(){
+	public void TeamMorningStandup(){
 		//Wait for all developers to arrive
 			//check for conference room to be available
 			//If its not wait until it is
@@ -34,12 +34,16 @@ public class TeamLead extends Employee{
 		
 		ConferenceRoom conf = new ConferenceRoom();
 		
-		while(true){
-			if (IsTeamIn()){
-				if (conf.isAvailable()){
-					try {
+		while(true)
+		{
+			if (IsTeamIn())
+			{
+				if (conf.isAvailable())
+				{
+					try
+					{
 						System.out.println(name+"'s team meets in the conference room.");
-						sleep(clock.toSimulatedMin(1500));
+						sleep(Clock.toRealtime(15));
 						System.out.println(name+"'s team leaves the conference room.");
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -85,7 +89,7 @@ public class TeamLead extends Employee{
 		if (!isAnswered){
 			try {
 				manager.AskQuestion(this);
-				sleep(clock.toSimulatedMin(1000)); //sleep for a time
+				this.wait(); //sleep for a time
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -121,12 +125,14 @@ public class TeamLead extends Employee{
 	
 	public void run(){
 		while(true){
-			if(clock.timeOfDay == clock.END_OF_DAY){
+			if(clock.getCurrentTime() == clock.END_OF_DAY){
 				return;
 			}
-			else if(false){ // check other meeting times
-				return;
+			
+			else if(clock.getCurrentTime() > clock.STANDUP){
+				TeamMorningStandup();
 			}
+			
 			else{
 				AnswerQuestion();
 			}
