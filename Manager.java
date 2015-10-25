@@ -81,15 +81,25 @@ public class Manager extends Thread{
 	private void ArriveAtWork(){
 		//The manager arrives at 8		
 		//He then waits until all of the team leads arrive at his office
-				
-			//When they have all arrived the team leads and manager will
-			//	wait 15 minutes	
+		while(! TeamLeadsHere()){
+			
+		}
+		//Tell all team leads to wait for during the meeting
+		for(TeamLead lead : TeamLeads){
 			try {
-				Thread.sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
+				lead.wait();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}		
+		// The meeting will last 15 minutes
+		try {
+			Thread.sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/*
@@ -100,6 +110,7 @@ public class Manager extends Thread{
 	 *  the manager spends 15 minutes discussing the project status.
 	 */
 	private synchronized void EndOfDayMeeting(){
+
 		//Goes to the conference room and waits for everyone to be there
 			//Call team lead's endOfDayMeeting
 				//when everyone is there sleep 15 minutes
@@ -109,6 +120,15 @@ public class Manager extends Thread{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		
+	}
+	
+	private boolean TeamLeadsHere(){
+		for(TeamLead lead : TeamLeads){
+			if(! lead.isAlive()){
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	//Team lead will answer a question
@@ -123,8 +143,15 @@ public class Manager extends Thread{
 	}
 	
 	//Team lead asks a question which is added to the priority queue
-	public void AskQuestion(TeamLead teamLead){
+	public synchronized void AskQuestion(TeamLead teamLead){
 		//Add question to the queue
+		//tell the team Lead to wait If the manager is not already busy
+		try {
+			teamLead.wait();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Questions.add(teamLead);	
 	}
 	
