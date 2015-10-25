@@ -13,6 +13,7 @@ public class TeamLead extends Employee{
 	private Manager manager;
 	private ArrayBlockingQueue<Employee> questions = new ArrayBlockingQueue<Employee>(1000);
 	public int lunch_time = 0, meeting_time = 0, question_time = 0, work_time = 0;
+	private int has_met = -1;
 	
 	public TeamLead(String name, int teamNum, Clock clck, Manager man){
 		super(temp, teamNum, 1, clck);
@@ -46,11 +47,13 @@ public class TeamLead extends Employee{
 					try
 					{
 						System.out.println(clock.getTimeStr(clock.getCurrentTime()) + " " + name + "'s team meets in the conference room.");
-						sleep(Clock.toRealtime(15));
 						for(Employee dev : teamMembers){
 							dev.sleep(Clock.toRealtime(15));
 						}
+						sleep(Clock.toRealtime(15));
+						has_met = 1;
 						System.out.println(clock.getTimeStr(clock.getCurrentTime())+" "+ name+"'s team leaves the conference room.");
+						break;
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -151,7 +154,7 @@ public class TeamLead extends Employee{
 				} catch (InterruptedException e){}
 			
 			}
-			else if(currentTime > Clock.STANDUP){
+			else if(currentTime > Clock.STANDUP && has_met == -1){
 				TeamMorningStandup();
 				meeting_time += clock.getCurrentTime() - currentTime;
 			}
