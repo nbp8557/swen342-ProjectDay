@@ -31,22 +31,39 @@ public class Clock {
 		timeOfDay = new AtomicInteger(START_OF_DAY);
 	}
 
+	/**
+	 * starts time itself
+	 */
 	public void startTime(){
 		timeKeep.scheduleAtFixedRate(task, 0, 10);
 	}
 
+	/**
+	 * return the current time of day
+	 */
 	public int getCurrentTime(){
 		return timeOfDay.get();
 	}
 
-	public static int toRealtime(int Simulatedmin){
-		return Simulatedmin * 10;
+	/**
+	 * convert simluated minutes to milliseconds
+	 * milliseconds = simulated minutes * 10
+	 */
+	public static int toRealtime(int simulatedMin){
+		return simulatedMin * 10;
 	}
 
+	/**
+	 * convert milliseconds to simulated minutes
+	 * simulated minutes = ms/10
+	 */
 	public static int toSimulatedMin(int ms){
 		return ms / 10;
 	}
 
+	/**
+	 * converts elapsed minutes to the time of day
+	 */
 	public static String getTimeStr(int min){
 		return Integer.toString((min / 60) + 8) + ":" + Integer.toString(min % 60);
 	}

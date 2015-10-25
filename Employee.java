@@ -19,26 +19,32 @@ public class Employee extends Thread {
 		clock = clck;
 	}
 	
+	//just call work
 	public void run(){
 		work();
 	}
 
+	/**
+	 * Loop called in the run method
+	 * represents the workday
+	 * Starts events at their time
+	 */
 	public void work(){
 		arrivalTime = clock.getCurrentTime();
 		System.out.println(Clock.getTimeStr(arrivalTime) + " " + getNameStr() + " arrives at work.");
-		while(clock.getCurrentTime() < Clock.END_OF_DAY){
+		while(clock.getCurrentTime() < Clock.END_OF_DAY){ //end loop when the day is over
 			int currentTime = clock.getCurrentTime();
-			if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchLength - arrivalTime >= Clock.WORKDAY){
+			if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchLength - arrivalTime >= Clock.WORKDAY){ //if 430 and have worked 8 hrs
 				break;
-			} else if(currentTime >= Clock.LUNCH && lunchLength == -1){
+			} else if(currentTime >= Clock.LUNCH && lunchLength == -1){ //if lunchtime and havent been to lunch
 				System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " went to lunch.");
 				lunchLength = lunch();
 				try{
-					sleep(Clock.toRealtime(lunchLength));
+					sleep(Clock.toRealtime(lunchLength)); //out to lunch
 				} catch (InterruptedException e){}
 				System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " returned from lunch.");
 			} else {
-				boolean hasQuestion = gen.nextInt(1000) == 1;
+				boolean hasQuestion = gen.nextInt(1000) == 1; //do i have a question at this time
 				if (hasQuestion) {
 					System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " asks a question.");
 					askQuestion();
@@ -67,13 +73,11 @@ public class Employee extends Thread {
 	private void askQuestion(){
 		//Ask the team lead the question
 		teamLead.ReceiveQuestion(this);
-	// 	if(answered){
-	// 		System.out.println("Answered!");
-	// 	} else {
-	// 		//ask manager, probably handled by the teamlead
-	// 	}
 	}
 
+	/**
+	 * returns Name String of the Employee as "Developer TN - MN"
+	 */
 	private String getNameStr(){
 		return "Developer " + String.valueOf(teamNumber) + " - " + String.valueOf(memberNumber);
 	}
