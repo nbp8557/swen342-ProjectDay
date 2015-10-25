@@ -52,7 +52,20 @@ public class Main{
 		//start the manager
 		Kronos.start();
 		
-		//Randomly start Team Leads and employees
+		//start the team leads
+		teamLead1.start();
+		teamLead2.start();
+		teamLead3.start();
+		
+		employee4.start();
+		employee5.start();
+		employee6.start();
+		employee7.start();
+		employee8.start();
+		employee9.start();
+		employee10.start();
+		employee11.start();
+		employee12.start();
 		
 	}
 }
