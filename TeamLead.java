@@ -3,9 +3,11 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 
 public class TeamLead extends Employee{
-	public String name;
+	private int lunchTime;
+	private int arrivalTime;
+	private String name;
 	//Will have a collection of developers 
-	public ArrayList<Employee> teamMembers;
+	private ArrayList<Employee> teamMembers;
 	private static TeamLead temp;
 	private Clock clock;
 	private Manager manager;
@@ -39,8 +41,7 @@ public class TeamLead extends Employee{
 		{
 			if (IsTeamIn())
 			{
-				if (conf.isAvailable())
-				{
+				synchronized(conf){
 					try
 					{
 						System.out.println(clock.getCurrentTime() + " " + name + "'s team meets in the conference room.");
@@ -50,6 +51,7 @@ public class TeamLead extends Employee{
 						e.printStackTrace();
 					}
 				}
+				
 			}
 		}
 		
@@ -89,8 +91,11 @@ public class TeamLead extends Employee{
 		//50% chance that we return true
 		if (!isAnswered){
 			try {
+				wait();
+				q.wait();
 				manager.AskQuestion(this);
-				this.wait(); //sleep for a time
+				q.notify();
+				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -111,7 +116,6 @@ public class TeamLead extends Employee{
 	
 	
 	private boolean IsTeamIn(){
-		boolean teamAllHere = true;
 		for(Employee dev : teamMembers){
 			if(! dev.isAlive()){
 				return false;
@@ -125,14 +129,26 @@ public class TeamLead extends Employee{
 	}
 	
 	public void run(){
-		while(true){
-			if(clock.getCurrentTime() == clock.END_OF_DAY){
-				return;
-			}
+		while(clock.getCurrentTime() == clock.END_OF_DAY){
+			int currentTime = clock.getCurrentTime();
 			
-			else if(clock.getCurrentTime() > clock.STANDUP){
+			
+			
+			if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchTime - arrivalTime >= Clock.WORKDAY){
+				break;
+			} else if(currentTime >= Clock.LUNCH && lunchTime == -1){
+				System.out.println(Clock.getTimeStr(currentTime) + " " + name + " went to lunch.");
+				lunchTime = super.lunch();
+				try{
+					sleep(Clock.toRealtime(lunchTime));
+				} catch (InterruptedException e){}
+			
+			}
+			else if(currentTime > clock.STANDUP){
 				TeamMorningStandup();
 			}
+			
+				
 			
 			else{
 				AnswerQuestion();
