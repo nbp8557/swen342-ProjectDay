@@ -16,6 +16,7 @@ public class TeamLead extends Employee{
 	
 	public TeamLead(String name, int teamNum, Clock clck, Manager man){
 		super(temp, teamNum, 1, clck);
+		this.clock = clck;
 		this.manager = man;
 		this.name = name;
 		this.teamMembers = new ArrayList<Employee>();
