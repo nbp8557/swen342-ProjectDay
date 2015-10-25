@@ -88,11 +88,13 @@ public class Manager extends Thread{
 		}
 		//Tell all team leads to wait for during the meeting
 		for(TeamLead lead : TeamLeads){
-			try {
-				lead.wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			synchronized(lead){
+				try {
+					lead.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}		
 		// The meeting will last 15 minutes
