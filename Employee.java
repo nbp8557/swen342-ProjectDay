@@ -44,7 +44,7 @@ public class Employee extends Thread {
 				} catch (InterruptedException e){}
 				System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " returned from lunch.");
 			} else {
-				boolean hasQuestion = gen.nextInt(1000) == 1; //do i have a question at this time
+				boolean hasQuestion = gen.nextInt(100000) == 1; //do i have a question at this time
 				if (hasQuestion) {
 					System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " asks a question.");
 					askQuestion();
