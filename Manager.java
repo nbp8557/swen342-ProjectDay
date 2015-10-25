@@ -29,7 +29,7 @@ public class Manager extends Thread{
 		while(Clock.getCurrentTime() <= Clock.END_OF_DAY){			
 			
 			if(Clock.getCurrentTime() >= Clock.EXEC1 &&  Clock.getCurrentTime() < Clock.EXEC1 + Clock.HOUR){
-				System.out.println("Manager is going to first Executive meeting");
+				System.out.println(Clock.getTimeStr(Clock.getCurrentTime()) + " Manager is going to first Executive meeting");
 				try {
 					this.sleep(Clock.toRealtime(Clock.HOUR));
 				} catch (InterruptedException e) {
@@ -38,7 +38,7 @@ public class Manager extends Thread{
 				}
 			}	
 			else if(Clock.getCurrentTime() >= Clock.LUNCH &&  Clock.getCurrentTime() < Clock.LUNCH + Clock.HOUR){
-				System.out.println("Manager is going to Lunch");
+				System.out.println(Clock.getTimeStr(Clock.getCurrentTime()) +" Manager is going to Lunch");
 				try {
 					this.sleep(Clock.toRealtime(Clock.HOUR));
 				} catch (InterruptedException e) {
@@ -47,7 +47,7 @@ public class Manager extends Thread{
 				}
 			}			
 			else if(Clock.getCurrentTime() >= Clock.EXEC2 &&  Clock.getCurrentTime() < Clock.EXEC2 + Clock.HOUR){
-				System.out.println("Manager is going to the second Executive meeting");
+				System.out.println(Clock.getTimeStr(Clock.getCurrentTime()) + " Manager is going to the second Executive meeting");
 				try {
 					this.sleep(Clock.toRealtime(Clock.HOUR));
 				} catch (InterruptedException e) {
@@ -56,10 +56,10 @@ public class Manager extends Thread{
 				}
 			}			
 			else if(Clock.getCurrentTime() >= Clock.STANDUP && Clock.getCurrentTime() < Clock.STANDUP + Clock.QUARTER_HOUR){
-				System.out.println("Manager is going to the End of Day Standup");
+				System.out.println(Clock.getTimeStr(Clock.getCurrentTime()) + " Manager is going to the End of Day Standup");
 				EndOfDayMeeting();
 			}else if(!Questions.isEmpty()){
-				System.out.println("Manager is answering a question");
+				System.out.println(Clock.getTimeStr(Clock.getCurrentTime()) + " Manager is answering a question");
 				AnswerQuestion();
 			}
 			
