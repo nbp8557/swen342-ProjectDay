@@ -22,6 +22,7 @@ public class Manager extends Thread{
 	}
 	
 	
+	@SuppressWarnings("static-access")
 	@ Override
 	public void run(){
 		//start the time
