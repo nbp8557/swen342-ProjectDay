@@ -114,6 +114,9 @@ public class Manager extends Thread{
 		//Goes to the conference room and waits for everyone to be there
 			//Call team lead's endOfDayMeeting
 				//when everyone is there sleep 15 minutes
+		
+		
+		
 			try {
 				sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
 			} catch (InterruptedException e) {
@@ -122,8 +125,25 @@ public class Manager extends Thread{
 			}		
 	}
 	
-	private boolean TeamLeadsHere(){
+	private boolean TeamLeadAndTeamsHere(){
 		for(TeamLead lead : TeamLeads){
+			//Team lead is busy
+			if(lead.getState() == Thread.State.TIMED_WAITING){
+				return false;
+			}else{
+				for( Employee employee : lead.teamMembers){
+					//Team member is busy
+					if(employee.getState() == Thread.State.TIMED_WAITING ){
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	private boolean TeamLeadsHere(){
+		for(TeamLead lead : TeamLeads){						
 			if(! lead.isAlive()){
 				return false;
 			}
