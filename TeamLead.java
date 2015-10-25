@@ -13,11 +13,11 @@ public class TeamLead extends Employee{
 	private PriorityBlockingQueue<Employee> questions = new PriorityBlockingQueue<Employee>();
 	
 	
-	public TeamLead(String name, int teamNum, ArrayList<Employee> members, Clock clck, Manager man){
+	public TeamLead(String name, int teamNum, Clock clck, Manager man){
 		super(temp, teamNum, 1, clck);
 		this.manager = man;
 		this.name = name;
-		this.teamMembers = members;
+		this.teamMembers = new ArrayList<Employee>();
 	}
 	/*
 	 * After the meeting, the team leads wait for all the members 
@@ -157,5 +157,8 @@ public class TeamLead extends Employee{
 			}
 		}
 		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " " + name + " went home.");
+	}
+	public boolean AddEmployee(Employee dev) {
+		return this.teamMembers.add(dev);		
 	}
 }

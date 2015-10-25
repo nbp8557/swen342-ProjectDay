@@ -109,29 +109,66 @@ public class Manager extends Thread{
 	 *  to clean up any work in progress. When all members have gathered, 
 	 *  the manager spends 15 minutes discussing the project status.
 	 */
-	private synchronized void EndOfDayMeeting(){
+	private void EndOfDayMeeting(){
 
 		//Goes to the conference room and waits for everyone to be there
 			//Call team lead's endOfDayMeeting
 				//when everyone is there sleep 15 minutes
 		
+		while(! TeamLeadAndTeamsHere()){
+			
+		}
 		
-		
+		//Now make the entire company wait for the meeting to conclude
+		for(TeamLead lead : TeamLeads){
+			//Team lead is now blocked by this meeting
 			try {
-				sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
+				lead.wait();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}		
+			}
+		
+			//Now every employee is blocked by this meeting
+			for( Employee employee : lead.getDevs()){
+				try {
+					employee.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		//simulate the end of day meeting length
+		try {
+			sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//Meeting has concluded
+		for(TeamLead lead : TeamLeads){
+			//Team lead is free to do whatever
+			lead.notify();
+			
+			//Now every employee is free to do whatever
+			for( Employee employee : lead.getDevs()){
+				employee.notify();
+			}
+		}
 	}
 	
+	//returns true if the entire company is here available
+	//otherwise returns false if anyone one is busy
 	private boolean TeamLeadAndTeamsHere(){
 		for(TeamLead lead : TeamLeads){
 			//Team lead is busy
 			if(lead.getState() == Thread.State.TIMED_WAITING){
 				return false;
 			}else{
-				for( Employee employee : lead.teamMembers){
+				for( Employee employee : lead.getDevs()){
 					//Team member is busy
 					if(employee.getState() == Thread.State.TIMED_WAITING ){
 						return false;
@@ -139,11 +176,16 @@ public class Manager extends Thread{
 				}
 			}
 		}
+		//No one is busy start meeting 
 		return true;
 	}
 	
+	//returns true if all Team Leads are available
+	//returns false if a single Team Lead is not available
 	private boolean TeamLeadsHere(){
-		for(TeamLead lead : TeamLeads){						
+		//loop through team leads
+		for(TeamLead lead : TeamLeads){			
+			//the lead thread is running
 			if(! lead.isAlive()){
 				return false;
 			}
@@ -154,17 +196,19 @@ public class Manager extends Thread{
 	//Team lead will answer a question
 	private void AnswerQuestion(){
 		try {
+			//simulate the time to answer a question
 			this.sleep(Clock.toRealtime(Clock.TEN_MINUTES));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//notify the Team Lead asking the question to stop blocking
 		Questions.remove().notify();
 	}
 	
 	//Team lead asks a question which is added to the priority queue
 	public synchronized void AskQuestion(TeamLead teamLead){
-		//Add question to the queue
+
 		//tell the team Lead to wait If the manager is not already busy
 		try {
 			teamLead.wait();
@@ -172,6 +216,7 @@ public class Manager extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//Add question to the queue
 		Questions.add(teamLead);	
 	}
 	
