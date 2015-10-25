@@ -16,13 +16,16 @@ public class Manager extends Thread{
 	}
 	
 	//used to add Team Leads to the managers collection
-	public boolean addTeamLead(TeamLead leader){
+	public boolean AddTeamLead(TeamLead leader){
 		return TeamLeads.add(leader);		
 	}
 	
 	
 	@ Override
 	public void run(){
+		//start the time
+		Clock.startTime();
+		
 		//The manager has arrived at work 
 		this.ArriveAtWork();
 		
@@ -120,7 +123,7 @@ public class Manager extends Thread{
 	}
 	
 	//Team lead asks a question which is added to the priority queue
-	private void AskQuestion(TeamLead teamLead){
+	public void AskQuestion(TeamLead teamLead){
 		//Add question to the queue
 		Questions.add(teamLead);	
 	}

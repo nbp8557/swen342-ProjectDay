@@ -36,6 +36,7 @@ public class Employee extends Thread {
 				try{
 					sleep(Clock.toRealtime(lunchLength));
 				} catch (InteruptedException e){}
+				System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " returned from lunch.");
 			} else {
 				boolean hasQuestion = gen.nextInt(1000) == 1;
 				if (hasQuestion) {

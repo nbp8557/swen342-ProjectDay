@@ -1,17 +1,20 @@
+import java.util.ArrayList;
 import java.util.concurrent.PriorityBlockingQueue;
 
 
 public class TeamLead extends Employee{
 	public String name;
 	//Will have a collection of developers 
-	public Employee[] teamMembers;
+	public ArrayList<Employee> teamMembers;
 	private static TeamLead temp;
 	private Clock clock;
 	private Manager manager;
 	private PriorityBlockingQueue<Employee> questions = new PriorityBlockingQueue<Employee>();
-	
-	public TeamLead(String name){
-		super(temp, 800, 4);
+		
+	public TeamLead(String name, int teamNum, Clock clck, Manager man){
+		super(temp, teamNum, 1, clck);
+		this.manager = man;
+		this.teamMembers = new ArrayList<Employee>();
 
 		this.name = name;
 	}
@@ -46,7 +49,7 @@ public class TeamLead extends Employee{
 				{
 					try
 					{
-						System.out.println(name+"'s team meets in the conference room.");
+						System.out.println(clock.getCurrentTime() + " " + name + "'s team meets in the conference room.");
 						sleep(Clock.toRealtime(15));
 						System.out.println(name+"'s team leaves the conference room.");
 					} catch (InterruptedException e) {
