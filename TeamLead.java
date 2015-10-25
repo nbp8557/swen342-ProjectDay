@@ -10,12 +10,17 @@ public class TeamLead extends Employee{
 	private PriorityBlockingQueue<Employee> questions = new PriorityBlockingQueue<Employee>();
 	
 	
-	public TeamLead(String name, Employee[] members){
+	public TeamLead(String name){
 		super(temp);
 
 		this.name = name;
-		this.teamMembers = members;
 	}
+	
+	//used to add Team Leads to the managers collection
+	public boolean AddEmployee(Employee dev){
+		return teamMembers.add(dev);		
+	}
+	
 	/*
 	 * After the meeting, the team leads wait for all the members 
 	 * of their team to arrive. When all members of a team are present,

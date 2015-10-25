@@ -4,12 +4,22 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class Manager extends Thread{
 	//Will have a collection of team leads 
-	ArrayList<TeamLead> TeamLeads = new ArrayList<TeamLead>();
+	ArrayList<TeamLead> TeamLeads;
 	//Will have a queue for questions
-	PriorityBlockingQueue<TeamLead> Questions = new PriorityBlockingQueue<TeamLead> ();
+	PriorityBlockingQueue<TeamLead> Questions;
+	Clock Clock;
 	
-	public Manager(){
+	public Manager(Clock inputClock){
+		TeamLeads = new ArrayList<TeamLead>();
+		Questions = new PriorityBlockingQueue<TeamLead> ();
+		Clock = inputClock;
 	}
+	
+	//used to add Team Leads to the managers collection
+	public boolean addTeamLead(TeamLead leader){
+		return TeamLeads.add(leader);		
+	}
+	
 	
 	@ Override
 	public void run(){
@@ -18,17 +28,32 @@ public class Manager extends Thread{
 		
 		while(Clock.getCurrentTime() <= Clock.END_OF_DAY){			
 			
-			if(Clock.getCurrentTime() >= Clock.EXEC1 &&  Clock.getCurrentTime() < Clock.EXEC1 + Clock.hour){
+			if(Clock.getCurrentTime() >= Clock.EXEC1 &&  Clock.getCurrentTime() < Clock.EXEC1 + Clock.HOUR){
 				System.out.println("Manager is going to first Executive meeting");
-				this.sleep(Clock.toRealtime(Clock.HOUR));
+				try {
+					this.sleep(Clock.toRealtime(Clock.HOUR));
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}	
-			else if(Clock.getCurrentTime() >= Clock.LUNCH &&  Clock.getCurrentTime() < Clock.LUNCH + Clock.hour){
+			else if(Clock.getCurrentTime() >= Clock.LUNCH &&  Clock.getCurrentTime() < Clock.LUNCH + Clock.HOUR){
 				System.out.println("Manager is going to Lunch");
-				this.sleep(Clock.toRealtime(Clock.HOUR));
+				try {
+					this.sleep(Clock.toRealtime(Clock.HOUR));
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}			
-			else if(Clock.getCurrentTime() >= Clock.EXEC2 &&  Clock.getCurrentTime() < Clock.EXEC2 + Clock.hour){
+			else if(Clock.getCurrentTime() >= Clock.EXEC2 &&  Clock.getCurrentTime() < Clock.EXEC2 + Clock.HOUR){
 				System.out.println("Manager is going to the second Executive meeting");
-				this.sleep(Clock.toRealtime(Clock.HOUR));
+				try {
+					this.sleep(Clock.toRealtime(Clock.HOUR));
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}			
 			else if(Clock.getCurrentTime() >= Clock.STANDUP && Clock.getCurrentTime() < Clock.STANDUP + Clock.QUARTER_HOUR){
 				System.out.println("Manager is going to the End of Day Standup");
@@ -56,7 +81,12 @@ public class Manager extends Thread{
 				
 			//When they have all arrived the team leads and manager will
 			//	wait 15 minutes	
-			this.sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
+			try {
+				Thread.sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 	/*
@@ -66,16 +96,26 @@ public class Manager extends Thread{
 	 *  to clean up any work in progress. When all members have gathered, 
 	 *  the manager spends 15 minutes discussing the project status.
 	 */
-	private void EndOfDayMeeting(){
+	private synchronized void EndOfDayMeeting(){
 		//Goes to the conference room and waits for everyone to be there
 			//Call team lead's endOfDayMeeting
 				//when everyone is there sleep 15 minutes
-			this.sleep(Clock.toRealtime(Clock.QUARTER_HOUR));		
+			try {
+				sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
 	}
 	
 	//Team lead will answer a question
 	private void AnswerQuestion(){
-		this.sleep(Clock.toRealtime(Clock.TEN_MINUTES));
+		try {
+			this.sleep(Clock.toRealtime(Clock.TEN_MINUTES));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Questions.remove().notify();
 	}
 	
