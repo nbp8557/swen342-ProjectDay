@@ -7,11 +7,12 @@ public class TeamLead extends Employee{
 	public Employee[] teamMembers;
 	private static TeamLead temp;
 	private Clock clock;
+	private Manager manager;
 	private PriorityBlockingQueue<Employee> questions = new PriorityBlockingQueue<Employee>();
 	
 	
 	public TeamLead(String name, Employee[] members){
-		super(temp);
+		super(temp, 800, 4);
 
 		this.name = name;
 		this.teamMembers = members;
@@ -78,17 +79,19 @@ public class TeamLead extends Employee{
 	 */
 	
 	public boolean AnswerQuestion(){
-		String q = questions.remove();
+		Employee q = questions.remove();
 		boolean isAnswered = Math.random()>0.5;
 		//50% chance that we return true
 		if (!isAnswered){
 			try {
-				sleep(clock.toSimulatedMin(1000)); //go to the managers office
+				manager.AskQuestion(this);
+				sleep(clock.toSimulatedMin(1000)); //sleep for a time
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 		else{
+			questions.remove().notify();
 			return true;
 		}
 		//If false

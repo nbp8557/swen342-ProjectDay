@@ -59,7 +59,7 @@ public class Employee extends Thread {
 	 */
 	private void askQuestion(){
 		//Ask the team lead the question
-		boolean answered = teamLead.AnswerQuestion(this);
+		teamLead.ReceiveQuestion(this);
 	// 	if(answered){
 	// 		System.out.println("Answered!");
 	// 	} else {
