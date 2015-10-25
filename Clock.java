@@ -18,14 +18,18 @@ public class Clock {
 
 	int timeOfDay = START_OF_DAY;
 	private Timer timeKeep;
+	private TimerTask task;
 
 	public Clock(){
 		timeKeep = new Timer(true);
-		TimerTask task = new TimerTask(){
+		task = new TimerTask(){
 			public void run(){
 				advanceTime();
 			}
 		};
+	}
+
+	public void startTime(){
 		timeKeep.scheduleAtFixedRate(task, 0, 10);
 	}
 
