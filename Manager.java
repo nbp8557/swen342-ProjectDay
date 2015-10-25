@@ -66,7 +66,7 @@ public class Manager extends Thread{
 	 *  to clean up any work in progress. When all members have gathered, 
 	 *  the manager spends 15 minutes discussing the project status.
 	 */
-	public void EndOfDayMeeting(){
+	private void EndOfDayMeeting(){
 		//Goes to the conference room and waits for everyone to be there
 			//Call team lead's endOfDayMeeting
 				//when everyone is there sleep 15 minutes
@@ -74,7 +74,7 @@ public class Manager extends Thread{
 	}
 	
 	//Team lead will answer a question
-	private boolean AnswerQuestion(){
+	private void AnswerQuestion(){
 		this.sleep(Clock.toRealtime(Clock.TEN_MINUTES));
 		Questions.remove().notify();
 	}
