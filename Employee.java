@@ -75,7 +75,7 @@ public class Employee extends Thread {
 	 * returns int minutes of how long they were out (30 - 60 min)
 	 */
 	protected int lunch(){
-		int lunchDuration = gen.nextInt(arrivalTime) + Clock.HALF_HOUR;
+		int lunchDuration = gen.nextInt(Clock.HALF_HOUR - arrivalTime) + Clock.HALF_HOUR;
 		//wait or do no work for lunch duration
 		return lunchDuration;
 	}
