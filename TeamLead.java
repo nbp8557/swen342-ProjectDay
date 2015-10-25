@@ -156,7 +156,10 @@ public class TeamLead extends Employee{
 			}
 			
 			else{
-				AnswerQuestion();
+				if(!questions.isEmpty()){
+					AnswerQuestion();
+				}
+				
 				question_time += clock.getCurrentTime() - currentTime;
 			}
 		}
