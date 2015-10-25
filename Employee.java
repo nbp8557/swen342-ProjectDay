@@ -12,6 +12,8 @@ public class Employee extends Thread {
 	private TeamLead teamLead = null;
 	private Clock clock;
 	
+	private int lunch_time, meeting_time, question_time, work_time;
+	
 	public Employee(TeamLead lead, int teamNum, int memNum, Clock clck){
 		teamLead = lead;
 		teamNumber = teamNum;
@@ -19,6 +21,17 @@ public class Employee extends Thread {
 		clock = clck;
 	}
 	
+	
+	public void makeWait(){
+		int time_start = clock.getCurrentTime();
+		try {
+			this.wait();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		meeting_time+=(clock.getCurrentTime() - time_start);
+	}
 	//just call work
 	public void run(){
 		work();
@@ -43,14 +56,17 @@ public class Employee extends Thread {
 					sleep(Clock.toRealtime(lunchLength)); //out to lunch
 				} catch (InterruptedException e){}
 				System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " returned from lunch.");
+				lunch_time = clock.getCurrentTime() - currentTime;
 			} else {
 				boolean hasQuestion = gen.nextInt(100000) == 1; //do i have a question at this time
 				if (hasQuestion) {
 					System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " asks a question.");
 					askQuestion();
+					question_time += clock.getCurrentTime() - currentTime;
 				}
 			}
 		}
+		work_time = 4800 - meeting_time - lunch_time - question_time;
 		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " " + getNameStr() + " went home.");
 	}
 	
