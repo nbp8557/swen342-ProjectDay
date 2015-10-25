@@ -1,5 +1,6 @@
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic;
 public class Clock {
 	//event times are in minutes elasped from the start of the workday(8)
 	public static final int START_OF_DAY = 0;
@@ -16,25 +17,26 @@ public class Clock {
 	public static final int QUARTER_HOUR = 15;
 	public static final int TEN_MINUTES = 10;
 
-	int timeOfDay = START_OF_DAY;
+	AtomicInteger timeOfDay;
 	private Timer timeKeep;
+	private TimerTask task;
 
 	public Clock(){
 		timeKeep = new Timer(true);
-		TimerTask task = new TimerTask(){
+		task = new TimerTask(){
 			public void run(){
-				advanceTime();
+				timeOfDay.incrementAndGet();
 			}
 		};
+		timeOfDay = new AtomicInteger(START_OF_DAY);
+	}
+
+	public void startTime(){
 		timeKeep.scheduleAtFixedRate(task, 0, 10);
 	}
 
-	private synchronized void advanceTime(){
-		timeOfDay++;
-	}
-
-	public synchronized int getCurrentTime(){
-		return timeOfDay;
+	public int getCurrentTime(){
+		return timeOfDay.get();
 	}
 
 	public static int toRealtime(int Simulatedmin){
