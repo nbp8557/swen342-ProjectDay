@@ -51,7 +51,7 @@ public class Employee extends Thread {
 				}
 			}
 		}
-		System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " went home.");
+		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " " + getNameStr() + " went home.");
 	}
 	
 	/**
