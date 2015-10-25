@@ -12,7 +12,7 @@ public class TeamLead extends Employee{
 	private Clock clock;
 	private Manager manager;
 	private ArrayBlockingQueue<Employee> questions = new ArrayBlockingQueue<Employee>(1000);
-	
+	private int lunch_time = 0, meeting_time = 0, question_time = 0, work_time = 0;
 	
 	public TeamLead(String name, int teamNum, Clock clck, Manager man){
 		super(temp, teamNum, 1, clck);
@@ -144,6 +144,7 @@ public class TeamLead extends Employee{
 			} else if(currentTime >= Clock.LUNCH && lunchTime == -1){
 				System.out.println(Clock.getTimeStr(currentTime) + " " + name + " went to lunch.");
 				lunchTime = super.lunch();
+				lunch_time  = clock.getCurrentTime() - currentTime;
 				try{
 					sleep(Clock.toRealtime(lunchTime));
 				} catch (InterruptedException e){}
@@ -151,13 +152,16 @@ public class TeamLead extends Employee{
 			}
 			else if(currentTime > clock.STANDUP){
 				TeamMorningStandup();
+				meeting_time += clock.getCurrentTime() - currentTime;
 			}
 			
 			else{
 				AnswerQuestion();
+				question_time += clock.getCurrentTime() - currentTime;
 			}
 		}
 		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " " + name + " went home.");
+		work_time = 4800 - question_time - meeting_time - lunch_time;
 	}
 	public boolean AddEmployee(Employee dev) {
 		return this.teamMembers.add(dev);		
