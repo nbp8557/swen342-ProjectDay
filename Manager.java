@@ -31,40 +31,40 @@ public class Manager extends Thread{
 		//The manager has arrived at work 
 		this.ArriveAtWork();
 		
-		while(clock.getCurrentTime() <= clock.END_OF_DAY){			
+		while(clock.getCurrentTime() <= Clock.END_OF_DAY){			
 			
-			if(clock.getCurrentTime() >= clock.EXEC1 &&  clock.getCurrentTime() < clock.EXEC1 + clock.HOUR){
-				System.out.println(clock.getTimeStr(clock.getCurrentTime()) + " Manager is going to first Executive meeting");
+			if(clock.getCurrentTime() >= Clock.EXEC1 &&  clock.getCurrentTime() < Clock.EXEC1 + Clock.HOUR){
+				System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager is going to first Executive meeting");
 				try {
-					this.sleep(clock.toRealtime(clock.HOUR));
+					this.sleep(Clock.toRealtime(clock.HOUR));
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}	
-			else if(clock.getCurrentTime() >= clock.LUNCH &&  clock.getCurrentTime() < clock.LUNCH + clock.HOUR){
-				System.out.println(clock.getTimeStr(clock.getCurrentTime()) +" Manager is going to Lunch");
+			else if(clock.getCurrentTime() >= Clock.LUNCH &&  clock.getCurrentTime() < Clock.LUNCH + Clock.HOUR){
+				System.out.println(Clock.getTimeStr(clock.getCurrentTime()) +" Manager is going to Lunch");
 				try {
-					this.sleep(clock.toRealtime(clock.HOUR));
+					this.sleep(Clock.toRealtime(Clock.HOUR));
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}			
-			else if(clock.getCurrentTime() >= clock.EXEC2 &&  clock.getCurrentTime() < clock.EXEC2 + clock.HOUR){
-				System.out.println(clock.getTimeStr(clock.getCurrentTime()) + " Manager is going to the second Executive meeting");
+			else if(clock.getCurrentTime() >= Clock.EXEC2 &&  clock.getCurrentTime() < Clock.EXEC2 + Clock.HOUR){
+				System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager is going to the second Executive meeting");
 				try {
-					this.sleep(clock.toRealtime(clock.HOUR));
+					this.sleep(Clock.toRealtime(Clock.HOUR));
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}			
-			else if(clock.getCurrentTime() >= clock.STANDUP && clock.getCurrentTime() < clock.STANDUP + clock.QUARTER_HOUR){
-				System.out.println(clock.getTimeStr(clock.getCurrentTime()) + " Manager is going to the End of Day Standup");
+			else if(clock.getCurrentTime() >= Clock.STANDUP && clock.getCurrentTime() < Clock.STANDUP + Clock.QUARTER_HOUR){
+				System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager is going to the End of Day Standup");
 				EndOfDayMeeting();
 			}else if(!Questions.isEmpty()){
-				System.out.println(clock.getTimeStr(clock.getCurrentTime()) + " Manager is answering a question");
+				System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager is answering a question");
 				AnswerQuestion();
 			}
 			
@@ -97,7 +97,7 @@ public class Manager extends Thread{
 		}		
 		// The meeting will last 15 minutes
 		try {
-			Thread.sleep(clock.toRealtime(clock.QUARTER_HOUR));
+			Thread.sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -119,7 +119,7 @@ public class Manager extends Thread{
 		
 		while(! TeamLeadAndTeamsHere()){
 			try {
-				sleep(clock.toRealtime(1));
+				sleep(Clock.toRealtime(1));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -149,7 +149,7 @@ public class Manager extends Thread{
 		
 		//simulate the end of day meeting length
 		try {
-			sleep(clock.toRealtime(clock.QUARTER_HOUR));
+			sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -195,9 +195,12 @@ public class Manager extends Thread{
 	//returns false if a single Team Lead is not available
 	private boolean TeamLeadsHere(){
 		//loop through team leads
+		boolean temp;
 		for(TeamLead lead : TeamLeads){			
 			//the lead thread is running
-			if(! lead.isAlive()){
+			temp = lead.isAlive();
+			
+			if(! temp){
 				return false;
 			}
 		}
@@ -208,7 +211,7 @@ public class Manager extends Thread{
 	private void AnswerQuestion(){
 		try {
 			//simulate the time to answer a question
-			this.sleep(clock.toRealtime(clock.TEN_MINUTES));
+			this.sleep(Clock.toRealtime(Clock.TEN_MINUTES));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

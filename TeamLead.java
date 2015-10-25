@@ -136,7 +136,7 @@ public class TeamLead extends Employee{
 	}
 	
 	public void run(){
-		while(clock.getCurrentTime() < clock.END_OF_DAY){
+		while(clock.getCurrentTime() < Clock.END_OF_DAY){
 			int currentTime = clock.getCurrentTime();
 			
 			if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchTime - arrivalTime >= Clock.WORKDAY){
@@ -150,7 +150,7 @@ public class TeamLead extends Employee{
 				} catch (InterruptedException e){}
 			
 			}
-			else if(currentTime > clock.STANDUP){
+			else if(currentTime > Clock.STANDUP){
 				TeamMorningStandup();
 				meeting_time += clock.getCurrentTime() - currentTime;
 			}
