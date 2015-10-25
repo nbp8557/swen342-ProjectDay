@@ -10,6 +10,7 @@ public class TeamLead extends Employee{
 	private ArrayList<Employee> teamMembers;
 	private static TeamLead temp;
 	private Clock clock;
+	private int hasMet = 0;
 	private Manager manager;
 	private ArrayBlockingQueue<Employee> questions = new ArrayBlockingQueue<Employee>(1000);
 	public int lunch_time = 0, meeting_time = 0, question_time = 0, work_time = 0;
@@ -48,6 +49,7 @@ public class TeamLead extends Employee{
 						sleep(Clock.toRealtime(15));
 						for(Employee dev : teamMembers){
 							dev.sleep(Clock.toRealtime(15));
+							hasMet = 1;
 						}
 						System.out.println(clock.getTimeStr(clock.getCurrentTime())+" "+ name+"'s team leaves the conference room.");
 					} catch (InterruptedException e) {
@@ -145,12 +147,12 @@ public class TeamLead extends Employee{
 				System.out.println(Clock.getTimeStr(currentTime) + " " + name + " went to lunch.");
 				lunchTime = super.lunch();
 				lunch_time  = clock.getCurrentTime() - currentTime;
-				try{
+				try{ 
 					sleep(Clock.toRealtime(lunchTime));
 				} catch (InterruptedException e){}
 			
 			}
-			else if(currentTime > Clock.STANDUP){
+			else if(currentTime > Clock.STANDUP && ! hasMet == 0){
 				TeamMorningStandup();
 				meeting_time += clock.getCurrentTime() - currentTime;
 			}
