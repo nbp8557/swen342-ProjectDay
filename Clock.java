@@ -1,6 +1,6 @@
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.atomic;
+import java.util.concurrent.atomic.AtomicInteger;
 public class Clock {
 	//event times are in minutes elasped from the start of the workday(8)
 	public static final int START_OF_DAY = 0;
