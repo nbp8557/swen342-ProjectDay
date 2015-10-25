@@ -65,6 +65,6 @@ public class Clock {
 	 * converts elapsed minutes to the time of day
 	 */
 	public static String getTimeStr(int min){
-		return Integer.toString((min / 60) + 8) + ":" + Integer.toString(min % 60);
+		return Integer.toString((min / 60) + 8) + ":" + String.format("%02d", min % 60);
 	}
 }
