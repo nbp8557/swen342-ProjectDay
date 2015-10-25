@@ -1,16 +1,11 @@
-
 public class ConferenceRoom{
-	private Object lock;
-	
-	public ConferenceRoom(){
-		lock = new Object();
-	}
-	public Object getConferenceRoom(){
-		return this.lock;
-	}
-	
-	public boolean isAvailable(){
-		//stubbed for now
-		return false;
+	private static ConferenceRoom conf = null;
+	public ConferenceRoom(){}
+
+	public static ConferenceRoom getConferenceRoom(){
+		if (conf == null) {
+			conf = new ConferenceRoom();
+		}
+		return conf;
 	}
 }
