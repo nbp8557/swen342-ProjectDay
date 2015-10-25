@@ -23,10 +23,14 @@ public class Clock {
 		timeKeep = new Timer(true);
 		TimerTask task = new TimerTask(){
 			public void run(){
-				timeOfDay++;
+				advanceTime();
 			}
 		};
 		timeKeep.scheduleAtFixedRate(task, 0, 10);
+	}
+
+	private synchronized void advanceTime(){
+		timeOfDay++;
 	}
 
 	public synchronized int getCurrentTime(){
