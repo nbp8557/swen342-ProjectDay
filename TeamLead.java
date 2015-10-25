@@ -12,7 +12,7 @@ public class TeamLead extends Employee{
 	private Clock clock;
 	private Manager manager;
 	private ArrayBlockingQueue<Employee> questions = new ArrayBlockingQueue<Employee>(1000);
-	private int lunch_time = 0, meeting_time = 0, question_time = 0, work_time = 0;
+	public int lunch_time = 0, meeting_time = 0, question_time = 0, work_time = 0;
 	
 	public TeamLead(String name, int teamNum, Clock clck, Manager man){
 		super(temp, teamNum, 1, clck);
