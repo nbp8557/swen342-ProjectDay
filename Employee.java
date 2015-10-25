@@ -12,7 +12,7 @@ public class Employee extends Thread {
 	private TeamLead teamLead = null;
 	private Clock clock;
 	
-	private int lunch_time, meeting_time, question_time, work_time;
+	private int lunch_time = 0, meeting_time = 0, question_time =0, work_time = 0;
 	
 	public Employee(TeamLead lead, int teamNum, int memNum, Clock clck){
 		teamLead = lead;
