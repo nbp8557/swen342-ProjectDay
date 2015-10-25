@@ -22,13 +22,9 @@ public class Employee extends Thread {
 	}
 
 	public void work(){
-		while(true){
+		while(Clock.getCurrentTime() < Clock.END_OF_DAY){
 			int currentTime = Clock.getCurrentTime();
-			if (currentTime >= Clock.END_OF_DAY) {
-				System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " went home.");
-				break;
-			} else if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchLength - arrivalTime >= Clock.WORKDAY){
-				System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " went home.");
+			if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchLength - arrivalTime >= Clock.WORKDAY){
 				break;
 			} else if(currentTime >= Clock.LUNCH && lunchLength == -1){
 				System.out.println(getNameStr() + " went to lunch.");
@@ -42,6 +38,7 @@ public class Employee extends Thread {
 				}
 			}
 		}
+		System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " went home.");
 	}
 	
 	/**
