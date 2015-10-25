@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 
@@ -6,12 +7,12 @@ public class Manager extends Thread{
 	//Will have a collection of team leads 
 	ArrayList<TeamLead> TeamLeads;
 	//Will have a queue for questions
-	PriorityBlockingQueue<TeamLead> Questions;
+	ArrayBlockingQueue<TeamLead> Questions;
 	Clock clock;
 	
 	public Manager(Clock inputClock){
 		TeamLeads = new ArrayList<TeamLead>();
-		Questions = new PriorityBlockingQueue<TeamLead> ();
+		Questions = new ArrayBlockingQueue<TeamLead> (1000);
 		clock = inputClock;
 	}
 	

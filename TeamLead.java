@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 
@@ -10,7 +11,7 @@ public class TeamLead extends Employee{
 	private static TeamLead temp;
 	private Clock clock;
 	private Manager manager;
-	private PriorityBlockingQueue<Employee> questions = new PriorityBlockingQueue<Employee>();
+	private ArrayBlockingQueue<Employee> questions = new ArrayBlockingQueue<Employee>(1000);
 	
 	
 	public TeamLead(String name, int teamNum, Clock clck, Manager man){
