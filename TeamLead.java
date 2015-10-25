@@ -1,3 +1,5 @@
+import java.util.concurrent.PriorityBlockingQueue;
+
 
 public class TeamLead extends Employee{
 	public String name;
@@ -5,7 +7,10 @@ public class TeamLead extends Employee{
 	public Employee[] teamMembers;
 	private static TeamLead temp;
 	private Clock clock;
-	public TeamLead(String name, Employee[] members){		
+	private PriorityBlockingQueue<Employee> questions = new PriorityBlockingQueue<Employee>();
+	
+	
+	public TeamLead(String name, Employee[] members){
 		super(temp);
 
 		this.name = name;
@@ -32,7 +37,9 @@ public class TeamLead extends Employee{
 			if (IsTeamIn()){
 				if (conf.isAvailable()){
 					try {
+						System.out.println(name+"'s team meets in the conference room.");
 						sleep(clock.toSimulatedMin(1500));
+						System.out.println(name+"'s team leaves the conference room.");
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -54,6 +61,7 @@ public class TeamLead extends Employee{
 			//Call employee's endOfDayMeeting
 				//when everyone is there sleep 15 minutes
 		
+		
 	}
 	
 	/*
@@ -70,17 +78,27 @@ public class TeamLead extends Employee{
 	 */
 	
 	public boolean AnswerQuestion(){
-
+		String q = questions.remove();
+		boolean isAnswered = Math.random()>0.5;
 		//50% chance that we return true
-		
+		if (!isAnswered){
+			try {
+				sleep(clock.toSimulatedMin(1000)); //go to the managers office
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		else{
+			return true;
+		}
 		//If false
 			//Wait 10 minutes
 			//Go to manager's office
 			//wait in line to ask the question
 			//after asking the question then return true
 		
-		
 		return false;
+		
 	}
 	
 	
@@ -92,5 +110,23 @@ public class TeamLead extends Employee{
 			}
 		}
 		return true;
+	}
+	
+	public void ReceiveQuestion(Employee e){
+		questions.add(e);
+	}
+	
+	public void run(){
+		while(true){
+			if(clock.timeOfDay == clock.END_OF_DAY){
+				return;
+			}
+			else if(false){ // check other meeting times
+				return;
+			}
+			else{
+				AnswerQuestion();
+			}
+		}
 	}
 }

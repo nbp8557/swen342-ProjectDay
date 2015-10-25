@@ -18,18 +18,28 @@ public class Employee extends Thread {
 	}
 	
 	public void run(){
+		work();
+	}
+
+	public void work(){
 		while(true){
 			int currentTime = Clock.getCurrentTime();
 			if (currentTime >= Clock.END_OF_DAY) {
-				System.out.println(getNameStr() + " went home.");
+				System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " went home.");
 				break;
 			} else if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchLength - arrivalTime >= Clock.WORKDAY){
-				System.out.println(getNameStr() + " went home.");
+				System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " went home.");
 				break;
 			} else if(currentTime >= Clock.LUNCH && lunchLength == -1){
 				System.out.println(getNameStr() + " went to lunch.");
 				lunchLength = lunch();
-				wait(Clock.toRealtime(lunchLength));
+				sleep(Clock.toRealtime(lunchLength));
+			} else {
+				boolean hasQuestion = gen.nextInt(1000) == 1;
+				if (hasQuestion) {
+					System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " asks a question.");
+					askQuestion();
+				}
 			}
 		}
 	}
@@ -43,6 +53,7 @@ public class Employee extends Thread {
 		//wait or do no work for lunch duration
 		return lunchDuration;
 	}
+
 	/*
 	 *  anypoint during the day a team member may ask a question 
 	 *  of his or her team lead. 
@@ -51,12 +62,12 @@ public class Employee extends Thread {
 	 */
 	private void askQuestion(){
 		//Ask the team lead the question
-		boolean answered = teamLead.AnswerQuestion();
-		if(answered){
-			System.out.println("Answered!");
-		} else {
-			//ask manager, probably handled by the teamlead
-		}
+		boolean answered = teamLead.AnswerQuestion(this);
+	// 	if(answered){
+	// 		System.out.println("Answered!");
+	// 	} else {
+	// 		//ask manager, probably handled by the teamlead
+	// 	}
 	}
 
 	private String getNameStr(){

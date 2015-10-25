@@ -27,4 +27,8 @@ public class Clock extends Thread {
 	public int toSimulatedMin(int ms){
 		return ms / 10;
 	}
+
+	public static String getTimeStr(int min){
+		return Integer.toString((min / 60) + 8) + ":" + Integer.toString(min % 60);
+	}
 }
