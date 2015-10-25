@@ -55,7 +55,7 @@ public class Employee extends Thread {
 				try{
 					sleep(Clock.toRealtime(lunchLength)); //out to lunch
 				} catch (InterruptedException e){}
-				System.out.println(Clock.getTimeStr(lunchLength) + " " + getNameStr() + " returned from lunch.");
+				System.out.println(Clock.getTimeStr(currentTime + lunchLength) + " " + getNameStr() + " returned from lunch.");
 				lunch_time = clock.getCurrentTime() - currentTime;
 			} else {
 				boolean hasQuestion = gen.nextInt(10000000) == 1; //do i have a question at this time
