@@ -130,7 +130,7 @@ public class Manager extends Thread{
 	 *  to clean up any work in progress. When all members have gathered, 
 	 *  the manager spends 15 minutes discussing the project status.
 	 */
-	private void EndOfDayMeeting(){
+	private synchronized void EndOfDayMeeting(){
 
 		//Goes to the conference room and waits for everyone to be there
 			//Call team lead's endOfDayMeeting
@@ -192,6 +192,35 @@ public class Manager extends Thread{
 		}
 	}
 	
+
+	//Manag will answer a question
+	private synchronized void AnswerQuestion(){
+		try {
+			//simulate the time to answer a question
+			sleep(Clock.toRealtime(Clock.TEN_MINUTES));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//Remove question from queue and notify the Team Lead asking the question		
+		TeamLead lead = Questions.remove();
+		try{
+			lead.notify();
+		}catch(IllegalMonitorStateException e){
+			e.printStackTrace();
+		}
+		
+		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager has answered a question");
+	}
+	
+	//Team lead asks a question which is added to the priority queue
+	public synchronized void AskQuestion(TeamLead teamLead){
+		
+		//Add question to the queue
+		Questions.add(teamLead);				
+
+	}
+	
 	//returns true if the entire company is here available
 	//otherwise returns false if anyone one is busy
 	private boolean TeamLeadAndTeamsHere(){
@@ -228,33 +257,5 @@ public class Manager extends Thread{
 		return true;
 	}
 	
-	//Manag will answer a question
-	private void AnswerQuestion(){
-		try {
-			//simulate the time to answer a question
-			sleep(Clock.toRealtime(Clock.TEN_MINUTES));
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//Remove question from queue and notify the Team Lead asking the question		
-		TeamLead lead = Questions.remove();
-		synchronized(lead){
-			lead.notify();
-		}
-		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager has answered a question");
-	}
-	
-	//Team lead asks a question which is added to the priority queue
-	public synchronized void AskQuestion(TeamLead teamLead){
-
-		
-		synchronized(this){	
-			//Add question to the queue
-			Questions.add(teamLead);				
-		}			
-
-		
-	}
 	
 }
