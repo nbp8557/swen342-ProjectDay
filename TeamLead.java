@@ -14,9 +14,11 @@ public class TeamLead extends Employee{
 	private Manager manager;
 	private ArrayBlockingQueue<Employee> questions = new ArrayBlockingQueue<Employee>(1000);
 	public int lunch_time = 0, meeting_time = 0, question_time = 0, work_time = 0;
+	private int has_met = -1;
 	
 	public TeamLead(String name, int teamNum, Clock clck, Manager man){
 		super(temp, teamNum, 1, clck);
+		this.clock = clck;
 		this.manager = man;
 		this.name = name;
 		this.teamMembers = new ArrayList<Employee>();
@@ -46,12 +48,13 @@ public class TeamLead extends Employee{
 					try
 					{
 						System.out.println(clock.getTimeStr(clock.getCurrentTime()) + " " + name + "'s team meets in the conference room.");
-						sleep(Clock.toRealtime(15));
 						for(Employee dev : teamMembers){
 							dev.sleep(Clock.toRealtime(15));
-							hasMet = 1;
 						}
+						sleep(Clock.toRealtime(15));
+						has_met = 1;
 						System.out.println(clock.getTimeStr(clock.getCurrentTime())+" "+ name+"'s team leaves the conference room.");
+						break;
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -96,8 +99,9 @@ public class TeamLead extends Employee{
 		//50% chance that we return true
 		if (!isAnswered){
 			try {
-				wait();
-				q.wait();
+				synchronized(q){
+					q.wait();
+				}
 				manager.AskQuestion(this);
 				q.notify();
 				
@@ -106,7 +110,6 @@ public class TeamLead extends Employee{
 			}
 		}
 		else{
-			questions.remove().notify();
 			return true;
 		}
 		//If false
@@ -152,7 +155,8 @@ public class TeamLead extends Employee{
 				} catch (InterruptedException e){}
 			
 			}
-			else if(currentTime > Clock.STANDUP && ! hasMet == 0){
+
+			else if(currentTime > Clock.STANDUP && has_met == -1){
 				TeamMorningStandup();
 				meeting_time += clock.getCurrentTime() - currentTime;
 			}
