@@ -21,15 +21,18 @@ public class Manager extends Thread{
 		return TeamLeads.add(leader);		
 	}
 	
-	
-	@SuppressWarnings("static-access")
+
 	@ Override
 	public void run(){
 		//start the time
-		clock.startTime();
-		
-		//The manager has arrived at work 
-		this.ArriveAtWork();
+
+		synchronized (this) {
+			clock.startTime();
+
+			System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager has arrived at work");
+			//The manager has arrived at work
+			this.ArriveAtWork();
+		}
 		
 		while(clock.getCurrentTime() <= Clock.END_OF_DAY){			
 			
@@ -69,7 +72,7 @@ public class Manager extends Thread{
 			}
 			
 		}
-		System.out.println("Manager has left work.");		
+		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager has left work.");
 	}
 	
 	/*
@@ -80,7 +83,7 @@ public class Manager extends Thread{
 	 *   15 minute standup meeting.
 	 *
 	 */
-	private void ArriveAtWork(){
+	private synchronized void ArriveAtWork(){
 		//The manager arrives at 8		
 		//He then waits until all of the team leads arrive at his office
 		while(! TeamLeadsHere()){
@@ -96,7 +99,8 @@ public class Manager extends Thread{
 					e.printStackTrace();
 				}
 			}
-		}		
+		}
+		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Morning Team Lead meeting has started.");
 		// The meeting will last 15 minutes
 		try {
 			Thread.sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
@@ -104,6 +108,13 @@ public class Manager extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		for(TeamLead lead : TeamLeads){
+			synchronized(lead){
+				lead.notify();
+			}
+		}
+		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Morning Team Lead meeting has ended.");
+
 	}
 	
 	/*
@@ -120,35 +131,35 @@ public class Manager extends Thread{
 				//when everyone is there sleep 15 minutes
 		
 		while(! TeamLeadAndTeamsHere()){
-			try {
-				sleep(Clock.toRealtime(1));
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
 		}
 		
 		//Now make the entire company wait for the meeting to conclude
 		for(TeamLead lead : TeamLeads){
 			//Team lead is now blocked by this meeting
-			try {
-				lead.wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
-			//Now every employee is blocked by this meeting
-			for( Employee employee : lead.getDevs()){
+			synchronized (lead) {
 				try {
-					employee.wait();
+					lead.wait();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
+			//Now every employee is blocked by this meeting
+			for( Employee employee : lead.getDevs()){
+				synchronized (employee) {
+					try {
+						employee.wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
 		}
-		
+
+		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " End of Day meeting has started.");
+
 		//simulate the end of day meeting length
 		try {
 			sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
@@ -156,21 +167,22 @@ public class Manager extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		//Meeting has concluded
-		notifyAll();
-		//Meeting has concluded
-		
-		/*for(TeamLead lead : TeamLeads){
+
+		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " End of Day meeting has ended.");
+
+		//Meeting has concluded	notify all team leads and their devs
+		for(TeamLead lead : TeamLeads){
 			//Team lead is free to do whatever
-			lead.notify();
-			lead.getD
+			synchronized (lead) {
+				lead.notify();
+			}
 			//Now every employee is free to do whatever
 			for( Employee employee : lead.getDevs()){
-				employee.notify();
+				synchronized (employee) {
+					employee.notify();
+				}
 			}
-		}*/
-		
+		}
 	}
 	
 	//returns true if the entire company is here available
@@ -213,7 +225,7 @@ public class Manager extends Thread{
 	private void AnswerQuestion(){
 		try {
 			//simulate the time to answer a question
-			this.sleep(Clock.toRealtime(Clock.TEN_MINUTES));
+			sleep(Clock.toRealtime(Clock.TEN_MINUTES));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

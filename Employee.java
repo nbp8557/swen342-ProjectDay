@@ -58,7 +58,7 @@ public class Employee extends Thread {
 				System.out.println(Clock.getTimeStr(currentTime + lunchLength) + " " + getNameStr() + " returned from lunch.");
 				lunch_time = clock.getCurrentTime() - currentTime;
 			} else {
-				boolean hasQuestion = gen.nextInt(10000000) == 1; //do i have a question at this time
+				boolean hasQuestion = gen.nextInt(100000000) == 1; //do i have a question at this time
 				if (hasQuestion) {
 					System.out.println(Clock.getTimeStr(currentTime) + " " + getNameStr() + " asks a question.");
 					askQuestion();
@@ -88,7 +88,7 @@ public class Employee extends Thread {
 	 */
 	private void askQuestion(){
 		//Ask the team lead the question
-		teamLead.ReceiveQuestion(this);
+		teamLead.AskQuestion(this);
 	}
 
 	/**

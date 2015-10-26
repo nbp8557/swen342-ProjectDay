@@ -53,7 +53,7 @@ public class TeamLead extends Employee{
 						sleep(Clock.toRealtime(15));
 						has_met = 1;
 						System.out.println(clock.getTimeStr(clock.getCurrentTime())+" "+ name+"'s team leaves the conference room.");
-						return;
+						break;
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -100,8 +100,8 @@ public class TeamLead extends Employee{
 			try {
 				synchronized(q){
 					q.wait();
+					manager.AskQuestion(this);
 				}
-				manager.AskQuestion(this);
 				q.notify();
 				
 			} catch (InterruptedException e) {
@@ -124,7 +124,7 @@ public class TeamLead extends Employee{
 	public ArrayList<Employee> getDevs(){
 		return this.teamMembers;
 	}
-	
+
 	
 	private boolean IsTeamIn(){
 		for(Employee dev : teamMembers){
@@ -135,27 +135,46 @@ public class TeamLead extends Employee{
 		return true;
 	}
 	
-	public void ReceiveQuestion(Employee e){
-		questions.add(e);
+	public boolean AskQuestion(Employee q){
+
+		boolean isAnswered = Math.random()>0.5;
+		//50% chance that we return true
+		if (!isAnswered){
+			try {
+				synchronized(q){
+					q.wait();
+				}
+				manager.AskQuestion(this);
+				q.notify();
+
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		else{
+			return true;
+		}
+
+		return false;
 	}
 	
 	public void run(){
+
 		while(clock.getCurrentTime() < Clock.END_OF_DAY){
 			int currentTime = clock.getCurrentTime();
 			
 			if (currentTime >= Clock.BEGIN_LEAVING && currentTime - lunchTime - arrivalTime >= Clock.WORKDAY){
 				break;
 			} else if(currentTime >= Clock.LUNCH && lunchTime == -1){
-				System.out.println(Clock.getTimeStr(currentTime) + " " + name + " went to lunch.");
+				System.out.println(Clock.getTimeStr(currentTime) + " " + this.name + " went to lunch.");
 				lunchTime = super.lunch();
 				lunch_time  = clock.getCurrentTime() - currentTime;
-				try{ 
+				try{
 					sleep(Clock.toRealtime(lunchTime));
 				} catch (InterruptedException e){}
 			
 			}
-
-			else if(currentTime > Clock.EXEC1 + 30 && has_met == -1){
+			else if(currentTime > Clock.STANDUP && has_met == -1){
 				TeamMorningStandup();
 				meeting_time += clock.getCurrentTime() - currentTime;
 			}
@@ -171,6 +190,7 @@ public class TeamLead extends Employee{
 		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " " + name + " went home.");
 		work_time = 4800 - question_time - meeting_time - lunch_time;
 	}
+
 	public boolean AddEmployee(Employee dev) {
 		return this.teamMembers.add(dev);		
 	}
