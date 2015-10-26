@@ -45,9 +45,9 @@ public class Main{
 		Employee employee12 = new Employee(teamLead2, 3, 4, theTime);
 		
 		//Add employees to Team Lead's team
-		teamLead1.AddEmployee(employee10);
-		teamLead1.AddEmployee(employee11);
-		teamLead1.AddEmployee(employee12);
+		teamLead3.AddEmployee(employee10);
+		teamLead3.AddEmployee(employee11);
+		teamLead3.AddEmployee(employee12);
 
 		//start the manager
 		Kronos.start();
