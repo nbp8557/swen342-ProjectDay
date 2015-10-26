@@ -13,14 +13,14 @@ public class Main{
 		TeamLead teamLead1 = new TeamLead("Team Lead 1-1", 1, theTime, Kronos);
 
 		Employee employee4 = new Employee(teamLead1, 1, 2, theTime);
-		Employee employee5 = new Employee(teamLead1, 1, 3, theTime);
-		Employee employee6 = new Employee(teamLead1, 1, 4, theTime);
+//		Employee employee5 = new Employee(teamLead1, 1, 3, theTime);
+//		Employee employee6 = new Employee(teamLead1, 1, 4, theTime);
 
 		//		Add employees to Team Lead's team
 		teamLead1.AddEmployee(employee4);
-		teamLead1.AddEmployee(employee5);
-		teamLead1.AddEmployee(employee6);
-//
+//		teamLead1.AddEmployee(employee5);
+//		teamLead1.AddEmployee(employee6);
+////
 //		//Create the team leads
 //		TeamLead teamLead1 = new TeamLead("Team Lead 1-1", 1, theTime, Kronos);
 //		TeamLead teamLead2 = new TeamLead("Team Lead 2-1", 2, theTime, Kronos);
@@ -70,8 +70,8 @@ public class Main{
 //		teamLead3.start();
 		
 		employee4.start();
-		employee5.start();
-		employee6.start();
+//		employee5.start();
+//		employee6.start();
 //		employee7.start();
 //		employee8.start();
 //		employee9.start();

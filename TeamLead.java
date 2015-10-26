@@ -79,18 +79,7 @@ public class TeamLead extends Employee{
 		
 	}
 	
-	/*
-	 * If the team lead is the one with the question, or if the 
-	 * question is one of the 50% the lead cannot answer, 
-	 * the lead and the member asking the question go 
-	 * to the project manager's office to have the question answered.
-	 *  When let into the manager's office, the team lead asks the question,
-	 *   the manager provides the answer, and the team lead (and possibly the 
-	 *   member with the question) return to work. Of course, the team may
-	 *   have to wait for one or more other teams to have their questions'
-	 *   answered first. We will also assume it always takes 10 minutes to ask 
-	 *   and answer a question.
-	 */
+	
 	
 	public boolean AnswerQuestion(){
 		Employee q = questions.remove();
@@ -99,26 +88,21 @@ public class TeamLead extends Employee{
 		if (!isAnswered){
 			try {
 				synchronized(q){
-					q.wait();
 					manager.AskQuestion(this);
+					q.wait();					
 				}
+				System.out.println("IM ALIVE");
 				q.notify();
 				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			return true;
 		}
 		else{
 			return true;
 		}
-		//If false
-			//Wait 10 minutes
-			//Go to manager's office
-			//wait in line to ask the question
-			//after asking the question then return true
-		
-		return false;
-		
+
 	}
 	
 	public ArrayList<Employee> getDevs(){
@@ -135,16 +119,42 @@ public class TeamLead extends Employee{
 		return true;
 	}
 	
+	/*
+	 * If the team lead is the one with the question, or if the 
+	 * question is one of the 50% the lead cannot answer, 
+	 * the lead and the member asking the question go 
+	 * to the project manager's office to have the question answered.
+	 *  When let into the manager's office, the team lead asks the question,
+	 *   the manager provides the answer, and the team lead (and possibly the 
+	 *   member with the question) return to work. Of course, the team may
+	 *   have to wait for one or more other teams to have their questions'
+	 *   answered first. We will also assume it always takes 10 minutes to ask 
+	 *   and answer a question.
+	 */
+	
+	/*
+	 * If the team lead is the one with the question, or if the 
+	 * question is one of the 50% the lead cannot answer, 
+	 * the lead and the member asking the question go 
+	 * to the project manager's office to have the question answered.
+	 *  When let into the manager's office, the team lead asks the question,
+	 *   the manager provides the answer, and the team lead (and possibly the 
+	 *   member with the question) return to work. Of course, the team may
+	 *   have to wait for one or more other teams to have their questions'
+	 *   answered first. We will also assume it always takes 10 minutes to ask 
+	 *   and answer a question.
+	 */	
 	public boolean AskQuestion(Employee q){
 
 		boolean isAnswered = Math.random()>0.5;
 		//50% chance that we return true
 		if (!isAnswered){
 			try {
-				synchronized(q){
-					q.wait();
-				}
-				manager.AskQuestion(this);
+				
+				synchronized(this){
+					manager.AskQuestion(this);
+					wait();					
+				}								
 				q.notify();
 
 			} catch (InterruptedException e) {

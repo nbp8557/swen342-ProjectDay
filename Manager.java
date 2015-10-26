@@ -5,10 +5,11 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class Manager extends Thread{
 	//Will have a collection of team leads 
-	ArrayList<TeamLead> TeamLeads;
+	private ArrayList<TeamLead> TeamLeads;
 	//Will have a queue for questions
-	ArrayBlockingQueue<TeamLead> Questions;
-	Clock clock;
+	private ArrayBlockingQueue<TeamLead> Questions;
+	private Object ConferenceRoom = new Object(); 
+	private Clock clock;
 	
 	public Manager(Clock inputClock){
 		TeamLeads = new ArrayList<TeamLead>();
@@ -30,13 +31,19 @@ public class Manager extends Thread{
 			clock.startTime();
 
 			System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager has arrived at work");
+		}
 			//The manager has arrived at work
 			this.ArriveAtWork();
-		}
+		
 		
 		while(clock.getCurrentTime() <= Clock.END_OF_DAY){			
 			
-			if(clock.getCurrentTime() >= Clock.EXEC1 &&  clock.getCurrentTime() < Clock.EXEC1 + Clock.HOUR){
+			if(!Questions.isEmpty()){
+				System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager is answering a question");
+				AnswerQuestion();
+			}
+			
+			else if(clock.getCurrentTime() >= Clock.EXEC1 &&  clock.getCurrentTime() < Clock.EXEC1 + Clock.HOUR){
 				System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager is going to first Executive meeting");
 				try {
 					this.sleep(Clock.toRealtime(clock.HOUR));
@@ -45,6 +52,7 @@ public class Manager extends Thread{
 					e.printStackTrace();
 				}
 			}	
+			
 			else if(clock.getCurrentTime() >= Clock.LUNCH &&  clock.getCurrentTime() < Clock.LUNCH + Clock.HOUR){
 				System.out.println(Clock.getTimeStr(clock.getCurrentTime()) +" Manager is going to Lunch");
 				try {
@@ -53,7 +61,8 @@ public class Manager extends Thread{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}			
+			}		
+			
 			else if(clock.getCurrentTime() >= Clock.EXEC2 &&  clock.getCurrentTime() < Clock.EXEC2 + Clock.HOUR){
 				System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager is going to the second Executive meeting");
 				try {
@@ -63,14 +72,11 @@ public class Manager extends Thread{
 					e.printStackTrace();
 				}
 			}			
+			
 			else if(clock.getCurrentTime() >= Clock.STANDUP && clock.getCurrentTime() < Clock.STANDUP + Clock.QUARTER_HOUR){
 				System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager is going to the End of Day Standup");
 				EndOfDayMeeting();
-			}else if(!Questions.isEmpty()){
-				System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager is answering a question");
-				AnswerQuestion();
-			}
-			
+			}			
 		}
 		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager has left work.");
 	}
@@ -133,53 +139,54 @@ public class Manager extends Thread{
 		while(! TeamLeadAndTeamsHere()){
 
 		}
-		
-		//Now make the entire company wait for the meeting to conclude
-		for(TeamLead lead : TeamLeads){
-			//Team lead is now blocked by this meeting
-			synchronized (lead) {
-				try {
-					lead.wait();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			//Now every employee is blocked by this meeting
-			for( Employee employee : lead.getDevs()){
-				synchronized (employee) {
+		synchronized(this.ConferenceRoom){
+			//Now make the entire company wait for the meeting to conclude
+			for(TeamLead lead : this.TeamLeads){
+				//Team lead is now blocked by this meeting
+				synchronized (lead) {
 					try {
-						employee.wait();
+						lead.wait();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
+				//Now every employee is blocked by this meeting
+				for( Employee employee : lead.getDevs()){
+					synchronized (employee) {
+						try {
+							employee.wait();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
 			}
-		}
-
-		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " End of Day meeting has started.");
-
-		//simulate the end of day meeting length
-		try {
-			sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " End of Day meeting has ended.");
-
-		//Meeting has concluded	notify all team leads and their devs
-		for(TeamLead lead : TeamLeads){
-			//Team lead is free to do whatever
-			synchronized (lead) {
-				lead.notify();
+	
+			System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " End of Day meeting has started.");
+	
+			//simulate the end of day meeting length
+			try {
+				sleep(Clock.toRealtime(Clock.QUARTER_HOUR));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			//Now every employee is free to do whatever
-			for( Employee employee : lead.getDevs()){
-				synchronized (employee) {
-					employee.notify();
+	
+			System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " End of Day meeting has ended.");
+	
+			//Meeting has concluded	notify all team leads and their devs
+			for(TeamLead lead : this.TeamLeads){
+				//Team lead is free to do whatever
+				synchronized (lead) {
+					lead.notify();
+				}
+				//Now every employee is free to do whatever
+				for( Employee employee : lead.getDevs()){
+					synchronized (employee) {
+						employee.notify();
+					}
 				}
 			}
 		}
@@ -188,7 +195,7 @@ public class Manager extends Thread{
 	//returns true if the entire company is here available
 	//otherwise returns false if anyone one is busy
 	private boolean TeamLeadAndTeamsHere(){
-		for(TeamLead lead : TeamLeads){
+		for(TeamLead lead : this.TeamLeads){
 			//Team lead is busy
 			if(lead.getState() == Thread.State.TIMED_WAITING){
 				return false;
@@ -210,7 +217,7 @@ public class Manager extends Thread{
 	private boolean TeamLeadsHere(){
 		//loop through team leads
 		boolean temp;
-		for(TeamLead lead : TeamLeads){			
+		for(TeamLead lead : this.TeamLeads){			
 			//the lead thread is running
 			temp = lead.isAlive();
 			
@@ -221,7 +228,7 @@ public class Manager extends Thread{
 		return true;
 	}
 	
-	//Team lead will answer a question
+	//Manag will answer a question
 	private void AnswerQuestion(){
 		try {
 			//simulate the time to answer a question
@@ -230,24 +237,24 @@ public class Manager extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//notify the Team Lead asking the question to stop blocking
-		Questions.remove().notify();
+		//Remove question from queue and notify the Team Lead asking the question		
+		TeamLead lead = Questions.remove();
+		synchronized(lead){
+			lead.notify();
+		}
+		System.out.println(Clock.getTimeStr(clock.getCurrentTime()) + " Manager has answered a question");
 	}
 	
 	//Team lead asks a question which is added to the priority queue
 	public synchronized void AskQuestion(TeamLead teamLead){
 
-		//tell the team Lead to wait If the manager is not already busy
-		try {
-			synchronized(teamLead){
-				teamLead.wait();
-			}			
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//Add question to the queue
-		Questions.add(teamLead);	
+		
+		synchronized(this){	
+			//Add question to the queue
+			Questions.add(teamLead);				
+		}			
+
+		
 	}
 	
 }

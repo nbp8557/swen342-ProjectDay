@@ -88,7 +88,15 @@ public class Employee extends Thread {
 	 */
 	private void askQuestion(){
 		//Ask the team lead the question
-		teamLead.AskQuestion(this);
+		synchronized(this){
+			teamLead.AskQuestion(this);
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
